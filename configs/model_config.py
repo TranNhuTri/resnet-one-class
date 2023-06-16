@@ -1,5 +1,5 @@
-from models.pre_activation_block import PreActivationBlock
-from models.pre_activation_bottleneck import PreActivationBottleneck
+from models.layers.pre_activation_block import PreActivationBlock
+from models.layers.pre_activation_bottleneck import PreActivationBottleneck
 
 RESNET_CONFIGS = {
     '18': [[2, 2, 2, 2], PreActivationBlock],
@@ -8,3 +8,5 @@ RESNET_CONFIGS = {
     '50': [[3, 4, 6, 3], PreActivationBottleneck],
     '101': [[3, 4, 23, 3], PreActivationBottleneck]
 }
+BATCH_SIZE = 64
+FEAT_LEN = 250
