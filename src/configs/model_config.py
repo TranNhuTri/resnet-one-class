@@ -1,5 +1,5 @@
-from models.layers.pre_activation_block import PreActivationBlock
-from models.layers.pre_activation_bottleneck import PreActivationBottleneck
+from src.layers.pre_activation_block import PreActivationBlock
+from src.layers.pre_activation_bottleneck import PreActivationBottleneck
 
 RESNET_CONFIGS = {
     '18': [[2, 2, 2, 2], PreActivationBlock],

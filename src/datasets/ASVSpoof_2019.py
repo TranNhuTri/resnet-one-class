@@ -5,8 +5,8 @@ import pickle
 import os
 from torch.utils.data.dataloader import default_collate
 
-from configs import model_config
-from constants import data_type
+from src.configs import model_config
+from src.constants import data_type
 
 torch.set_default_tensor_type(torch.FloatTensor)
 

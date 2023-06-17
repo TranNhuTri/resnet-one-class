@@ -4,10 +4,10 @@ import pickle
 import torchaudio
 from torchaudio import transforms
 
-from configs import lfcc_config
-from constants import data_type, feature_type
+from src.configs import lfcc_config
+from src.constants import data_type, feature_type
 
-features_path = "../data/ASVSpoof2019/LA/features"
+features_path = "/"
 
 
 def extract_features(
@@ -31,7 +31,9 @@ def extract_features(
         speaker, filename, _, tag, label = info
         audio_path = os.path.join(
             voice_files_path,
-            "ASVSpoof2019_" + access_type + "_" + part + "/flac/" + filename + ".flac"
+            "ASVSpoof2019_" + access_type + "_" + part,
+            "flac",
+            filename + ".flac"
         )
         waveform, sample_rate = torchaudio.load(audio_path, normalize=True)
         win_length = int((sample_rate / 1000) * lfcc_config.WIN_LENGTH)
@@ -45,12 +47,18 @@ def extract_features(
         else:
             features = None
         with open(
-            os.path.join(features_path, part) + '/' + feature + '/' + filename + '.pkl',
+            os.path.join(
+                features_path,
+                part,
+                feature,
+                filename + '.pkl'
+            ),
             "wb"
         ) as f:
             pickle.dump(features.numpy(), f)
 
 
 if __name__ == "__main__":
-    extract_features(data_type.TRAIN, feature_type.LFCC)
-    extract_features(data_type.DEV, feature_type.LFCC)
+    # extract_features(data_type.TRAIN, feature_type.LFCC)
+    # extract_features(data_type.DEV, feature_type.LFCC)
+    extract_features(data_type.EVAL, feature_type.LFCC)

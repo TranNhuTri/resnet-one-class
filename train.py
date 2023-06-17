@@ -12,13 +12,13 @@ import numpy as np
 import torch
 from torch.utils.data import DataLoader
 
-from configs import model_config
-from constants import resnet_type, feature_type, softmax_type, data_type
-from datasets.ASVSpoof_2019 import ASVSpoof2019
-from eval_metrics import compute_eer
-from models.loss.am_softmax import AMSoftmax
-from models.loss.oc_softmax import OCSoftmax
-from models.resnet import ResNet
+from src.configs import model_config
+from src.constants import resnet_type, feature_type, softmax_type, data_type
+from src.datasets.ASVSpoof_2019 import ASVSpoof2019
+from src.metrics.eval_metrics import compute_eer
+from src.loss_functions.am_softmax import AMSoftmax
+from src.loss_functions.oc_softmax import OCSoftmax
+from src.models.resnet import ResNet
 
 torch.set_default_tensor_type(torch.FloatTensor)
 
@@ -74,9 +74,9 @@ def init_params():
         type=str,
         default="oc_softmax",
         choices=["softmax", "am_softmax", "oc_softmax"],
-        help="loss for one-class training"
+        help="loss_functions for one-class training"
     )
-    parser.add_argument("--weight_loss", type=float, default=1, help="weight for other loss")
+    parser.add_argument("--weight_loss", type=float, default=1, help="weight for other loss_functions")
     parser.add_argument("--r_real", type=float, default=0.9, help="r_real for oc_softmax")
     parser.add_argument("--r_fake", type=float, default=0.2, help="r_fake for oc_softmax")
     parser.add_argument("--alpha", type=float, default=20, help="scale factor for oc_softmax")
@@ -116,10 +116,10 @@ def init_params():
             file.write(json.dumps(vars(args), sort_keys=True, separators=('\n', ':')))
 
         with open(os.path.join(args.out_fold, "train_loss.log"), 'w') as file:
-            file.write("Start recording training loss ...\n")
+            file.write("Start recording training loss_functions ...\n")
 
         with open(os.path.join(args.out_fold, "dev_loss.log"), 'w') as file:
-            file.write("Start recording validation loss ...\n")
+            file.write("Start recording validation loss_functions ...\n")
 
     # assign device
     args.cuda = torch.cuda.is_available()
@@ -313,7 +313,8 @@ def train(args):
             os.path.join(
                 args.out_fold,
                 "checkpoint",
-                "anti-spoofing_lfcc_model_%d.pt" % (epoch_num + 1))
+                "anti-spoofing_lfcc_model_%d.pt" % (epoch_num + 1)
+            )
         )
         loss_model = None
         if args.add_loss in [softmax_type.OC_SOFTMAX, softmax_type.AM_SOFTMAX]:
@@ -323,10 +324,13 @@ def train(args):
                 os.path.join(
                     args.out_fold,
                     "checkpoint",
-                    "anti-spoofing_loss_model_%d.pt" % (epoch_num + 1))
+                    "anti-spoofing_loss_model_%d.pt" % (epoch_num + 1)
+                )
             )
 
         if val_eer < prev_eer:
+            torch.save(model, os.path.join(args.out_fold, 'anti-spoofing_lfcc_model.pt'))
+            torch.save(loss_model, os.path.join(args.out_fold, 'anti-spoofing_loss_model.pt'))
             early_stop_cnt = 0
         else:
             early_stop_cnt += 1

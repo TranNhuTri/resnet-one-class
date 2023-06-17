@@ -1,10 +1,10 @@
 from torch.nn import Module, BatchNorm2d, Sequential, Conv2d, ReLU, Linear
 
-from configs.model_config import RESNET_CONFIGS
-from constants import resnet_type
-from models.layers.pre_activation_block import PreActivationBlock
-from models.layers.pre_activation_bottleneck import PreActivationBottleneck
-from models.layers.self_attention import SelfAttention
+from src.configs.model_config import RESNET_CONFIGS
+from src.constants import resnet_type
+from src.layers.pre_activation_block import PreActivationBlock
+from src.layers.pre_activation_bottleneck import PreActivationBottleneck
+from src.layers.self_attention import SelfAttention
 
 
 class ResNet(Module):
