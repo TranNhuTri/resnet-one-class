@@ -18,12 +18,12 @@ def test_model(feat_model_path, loss_model_path, part, add_loss, device):
         dir_path = dirname(dirname(feat_model_path))
     else:
         dir_path = dirname(feat_model_path)
-    model = torch.load(feat_model_path, map_location=torch.device('cpu'))
+    model = torch.load(feat_model_path, map_location=torch.device(device))
     model = model.to(device)
-    loss_model = torch.load(loss_model_path, map_location=torch.device('cpu')) if add_loss != "softmax" else None
+    loss_model = torch.load(loss_model_path, map_location=torch.device(device)) if add_loss != "softmax" else None
     test_set = ASVSpoof2019(
         "LA",
-        "features",
+        "./data/ASVSpoof2019/LA/features",
         "./data/ASVSpoof2019/LA/ASVSpoof2019_LA_cm_protocols/",
         part,
         feature_type=feature_type.LFCC,

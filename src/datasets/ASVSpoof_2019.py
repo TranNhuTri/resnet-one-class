@@ -79,13 +79,26 @@ class ASVSpoof2019(Dataset):
     def __getitem__(self, idx):
         speaker, filename, _, tag, label = self.all_info[idx]
         try:
-            with open(self.ptf + '/' + filename + self.feature_type + '.pkl', 'rb') as feature_handle:
+            with open(
+                    os.path.join(
+                        self.path_to_features,
+                        self.part,
+                        self.feature_type,
+                        filename + '.pkl',
+                    ),
+                    "rb"
+            ) as feature_handle:
                 feat_mat = pickle.load(feature_handle)
         except:
             # add this exception statement since we may change the data split
             with open(
-                os.path.join(self.path_to_features, self.part) + '/' + self.feature_type + '/' + filename + '.pkl',
-                "rb"
+                    os.path.join(
+                        self.path_to_features,
+                        self.part,
+                        self.feature_type,
+                        filename + '.pkl',
+                    ),
+                    "rb"
             ) as feature_handle:
                 feat_mat = pickle.load(feature_handle)
 
