@@ -39,7 +39,7 @@ class ResNet(Module):
         )
         self.bn5 = BatchNorm2d(256)
         self.attention = SelfAttention(256)
-        self.fc = Linear(256 * 2, enc_dim)
+        self.fc = Linear(256 * 4, enc_dim)
         self.fc_mu = Linear(enc_dim, num_classes) if num_classes >= 2 else Linear(enc_dim, 1)
 
     def _make_layer(
@@ -74,8 +74,9 @@ class ResNet(Module):
         out = self.conv5(out)
         out = self.bn5(out)
         out = self.activation(out).squeeze(2)
-
-        stats = self.attention(out.permute(0, 2, 1).contiguous())
-        feat = self.fc(stats)
+        # out = out.permute(0, 2, 1).contiguous()
+        out = out.view(out.size(0), -1)
+        # stats = self.attention(out)
+        feat = self.fc(out)
         mu = self.fc_mu(feat)
         return feat, mu
