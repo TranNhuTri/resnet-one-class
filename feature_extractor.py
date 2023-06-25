@@ -1,22 +1,21 @@
 import os
 import pickle
 
-import torchaudio
-from torchaudio import transforms
+import progressbar as progressbar
 
-from src.configs import lfcc_config
+from src.configs import path_config
 from src.constants import data_type, feature_type
-
-features_path = "/"
+from src.features.lfcc_extractor import extract_lfcc_features
 
 
 def extract_features(
     part,
     feature,
     access_type="LA",
-    proto_files_path="../data/ASVSpoof2019/LA/ASVSpoof2019_LA_cm_protocols",
+    proto_files_path=path_config.PROTOCOL_PATH,
     voice_files_path="/Volumes/T7/dataset/LA"
 ):
+    print(f"{part}")
     if part == data_type.TRAIN:
         proto_file_extension = ".trn.txt"
     else:
@@ -27,7 +26,9 @@ def extract_features(
     )
     with open(protocol_path, 'r') as f:
         audio_info = [info.strip().split() for info in f.readlines()]
-    for info in audio_info:
+    pbar = progressbar.ProgressBar(maxval=len(audio_info))
+    pbar.start()
+    for i, info in enumerate(audio_info):
         speaker, filename, _, tag, label = info
         audio_path = os.path.join(
             voice_files_path,
@@ -35,20 +36,13 @@ def extract_features(
             "flac",
             filename + ".flac"
         )
-        waveform, sample_rate = torchaudio.load(audio_path, normalize=True)
-        win_length = int((sample_rate / 1000) * lfcc_config.WIN_LENGTH)
         if feature == feature_type.LFCC:
-            transform = transforms.LFCC(
-                sample_rate=sample_rate,
-                n_lfcc=lfcc_config.N_LFCC,
-                speckwargs={"n_fft": lfcc_config.N_FFT, "win_length": win_length},
-            )
-            features = transform(waveform)[0]
+            features = extract_lfcc_features(audio_path)
         else:
             features = None
         with open(
             os.path.join(
-                features_path,
+                path_config.FEATURE_PATH,
                 part,
                 feature,
                 filename + '.pkl'
@@ -56,9 +50,11 @@ def extract_features(
             "wb"
         ) as f:
             pickle.dump(features.numpy(), f)
+        pbar.update(i + 1)
+    pbar.finish()
 
 
 if __name__ == "__main__":
-    # extract_features(data_type.TRAIN, feature_type.LFCC)
-    # extract_features(data_type.DEV, feature_type.LFCC)
+    extract_features(data_type.TRAIN, feature_type.LFCC)
+    extract_features(data_type.DEV, feature_type.LFCC)
     extract_features(data_type.EVAL, feature_type.LFCC)

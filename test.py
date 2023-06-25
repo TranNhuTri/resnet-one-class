@@ -8,7 +8,7 @@ from src.metrics import eval_metrics as em
 from src.configs import model_config
 
 from src.constants import softmax_type, feature_type
-from src.datasets.ASVSpoof_2019 import ASVSpoof2019
+from src.datasets.ASVSpoof_2019_dataset import ASVSpoof2019
 
 
 def test_model(feat_model_path, loss_model_path, part, add_loss, device):
@@ -69,8 +69,8 @@ def test_model(feat_model_path, loss_model_path, part, add_loss, device):
 
 
 def test(model_dir, add_loss, device):
-    model_path = os.path.join(model_dir, "anti-spoofing_lfcc_model.pt")
-    loss_model_path = os.path.join(model_dir, "anti-spoofing_loss_model.pt")
+    model_path = os.path.join(model_dir, "anti-spoofing_lfcc_model_2.pt")
+    loss_model_path = os.path.join(model_dir, "anti-spoofing_loss_model_2.pt")
     test_model(model_path, loss_model_path, "eval", add_loss, device)
 
 

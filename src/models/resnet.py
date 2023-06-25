@@ -2,9 +2,9 @@ from torch.nn import Module, BatchNorm2d, Sequential, Conv2d, ReLU, Linear
 
 from src.configs.model_config import RESNET_CONFIGS
 from src.constants import resnet_type
-from src.layers.pre_activation_block import PreActivationBlock
-from src.layers.pre_activation_bottleneck import PreActivationBottleneck
-from src.layers.self_attention import SelfAttention
+from src.modules.pre_activation_block import PreActivationBlock
+from src.modules.pre_activation_bottleneck import PreActivationBottleneck
+from src.modules.self_attention import SelfAttention
 
 
 class ResNet(Module):
@@ -20,7 +20,7 @@ class ResNet(Module):
 
         num_blocks, block = RESNET_CONFIGS[model_type]
 
-        self.conv1 = Conv2d(1, 16, kernel_size=(9, 3), stride=(3, 1), padding=(1, 1), bias=False)
+        self.conv1 = Conv2d(1, 16, kernel_size=3, stride=1, padding=1, bias=False)
         self.bn1 = BatchNorm2d(16)
         self.activation = ReLU()
 
