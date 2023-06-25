@@ -4,13 +4,11 @@ from src.configs.model_config import RESNET_CONFIGS
 from src.constants import resnet_type
 from src.modules.pre_activation_block import PreActivationBlock
 from src.modules.pre_activation_bottleneck import PreActivationBottleneck
-from src.modules.self_attention import SelfAttention
 
 
 class ResNet(Module):
     def __init__(
         self,
-        num_nodes: int,
         enc_dim: int,
         model_type: resnet_type = resnet_type.TYPE_18_LAYERS,
         num_classes: int = 2
@@ -20,7 +18,7 @@ class ResNet(Module):
 
         num_blocks, block = RESNET_CONFIGS[model_type]
 
-        self.conv1 = Conv2d(1, 16, kernel_size=3, stride=1, padding=1, bias=False)
+        self.conv1 = Conv2d(1, 16, kernel_size=3, stride=1, bias=False)
         self.bn1 = BatchNorm2d(16)
         self.activation = ReLU()
 
@@ -28,18 +26,8 @@ class ResNet(Module):
         self.layer2 = self._make_layer(num_blocks[1], block, out_channels=128, stride=2)
         self.layer3 = self._make_layer(num_blocks[2], block, out_channels=256, stride=2)
         self.layer4 = self._make_layer(num_blocks[3], block, out_channels=512, stride=2)
-
-        self.conv5 = Conv2d(
-            in_channels=512 * block.expansion,
-            out_channels=256,
-            kernel_size=(num_nodes, 3),
-            stride=(1, 1),
-            padding=(0, 1),
-            bias=False
-        )
-        self.bn5 = BatchNorm2d(256)
-        self.attention = SelfAttention(256)
-        self.fc = Linear(256 * 4, enc_dim)
+        self.bn5 = BatchNorm2d(512)
+        self.fc = Linear(512 * 4, enc_dim)
         self.fc_mu = Linear(enc_dim, num_classes) if num_classes >= 2 else Linear(enc_dim, 1)
 
     def _make_layer(
@@ -71,12 +59,9 @@ class ResNet(Module):
         out = self.layer2(out)
         out = self.layer3(out)
         out = self.layer4(out)
-        out = self.conv5(out)
         out = self.bn5(out)
-        out = self.activation(out).squeeze(2)
-        # out = out.permute(0, 2, 1).contiguous()
+        out = self.activation(out)
         out = out.view(out.size(0), -1)
-        # stats = self.attention(out)
         feat = self.fc(out)
         mu = self.fc_mu(feat)
         return feat, mu

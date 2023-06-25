@@ -137,7 +137,6 @@ def train(args):
 
     # initialize model
     model = ResNet(
-        num_nodes=1,
         enc_dim=args.enc_dim,
         model_type=resnet_type.TYPE_18_LAYERS,
         num_classes=2
