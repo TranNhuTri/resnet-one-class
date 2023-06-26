@@ -13,5 +13,5 @@ def extract_lfcc_features(audio_path):
         n_lfcc=lfcc_config.N_LFCC,
         speckwargs={"n_fft": lfcc_config.N_FFT, "win_length": win_length},
     )
-    features = transform(waveform)[0]
+    features = transform(waveform)[0].numpy()
     return features

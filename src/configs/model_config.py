@@ -8,7 +8,7 @@ RESNET_CONFIGS = {
     '50': [[3, 4, 6, 3], PreActivationBottleneck],
     '101': [[3, 4, 23, 3], PreActivationBottleneck]
 }
-FEAT_LEN = 250
+FEAT_LEN = 750
 NUM_EPOCHS = 100
 BATCH_SIZE = 64
 LEARNING_RATE = 0.0003

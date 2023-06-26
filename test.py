@@ -26,7 +26,7 @@ def test_model(feat_model_path, loss_model_path, part, add_loss, device):
         path_config.FEATURE_PATH,
         path_config.PROTOCOL_PATH,
         part,
-        feature_type=feature_type.LFCC,
+        feature_type=feature_type.DSCC,
         feat_len=model_config.FEAT_LEN,
         padding_type="repeat"
     )

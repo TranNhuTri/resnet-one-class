@@ -158,7 +158,7 @@ def train(args):
         path_to_features=args.path_to_features,
         path_to_protocol=args.path_to_protocol,
         part=data_type.TRAIN,
-        feature_type=feature_type.LFCC,
+        feature_type=feature_type.DSCC,
         feat_len=args.feat_len, 
         padding_type=args.padding
     )
@@ -167,7 +167,7 @@ def train(args):
         path_to_features=args.path_to_features,
         path_to_protocol=args.path_to_protocol,
         part=data_type.DEV,
-        feature_type=feature_type.LFCC,
+        feature_type=feature_type.DSCC,
         feat_len=args.feat_len, 
         padding_type=args.padding
     )
