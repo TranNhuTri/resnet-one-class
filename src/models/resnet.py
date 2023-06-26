@@ -1,4 +1,4 @@
-from torch.nn import Module, BatchNorm2d, Sequential, Conv2d, ReLU, Linear
+from torch.nn import Module, BatchNorm2d, Sequential, Conv2d, ReLU, Linear, AvgPool2d
 
 from src.configs.model_config import RESNET_CONFIGS
 from src.constants import resnet_type
@@ -27,7 +27,8 @@ class ResNet(Module):
         self.layer3 = self._make_layer(num_blocks[2], block, out_channels=256, stride=2)
         self.layer4 = self._make_layer(num_blocks[3], block, out_channels=512, stride=2)
         self.bn5 = BatchNorm2d(512)
-        self.fc = Linear(512 * 4, enc_dim)
+        self.avg_pool = AvgPool2d(kernel_size=(1, 12), stride=1)
+        self.fc = Linear(512, enc_dim)
         self.fc_mu = Linear(enc_dim, num_classes) if num_classes >= 2 else Linear(enc_dim, 1)
 
     def _make_layer(
@@ -61,6 +62,7 @@ class ResNet(Module):
         out = self.layer4(out)
         out = self.bn5(out)
         out = self.activation(out)
+        out = self.avg_pool(out)
         out = out.view(out.size(0), -1)
         feat = self.fc(out)
         mu = self.fc_mu(feat)
