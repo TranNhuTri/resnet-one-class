@@ -115,7 +115,7 @@ class ASVSpoof2019(Dataset):
             else:
                 raise ValueError('padding should be zero or repeat!')
 
-        return feat_mat, filename, self.tag[tag], self.label[label]
+        return torch.transpose(feat_mat, 0, 1), filename, self.tag[tag], self.label[label]
 
     @staticmethod
     def collate_fn(samples):
